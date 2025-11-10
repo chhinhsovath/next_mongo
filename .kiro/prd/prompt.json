@@ -1,0 +1,249 @@
+{
+  "project_name": "sangapac-hrmis",
+  "description": "Human Resources Management Information System for Sangapac Company",
+  "database": {
+    "type": "MongoDB",
+    "connection_string": "mongodb+srv://chhinhs_db_user:29kFylpMI5pQ08iV@pedhrmis.9s3kean.mongodb.net/?appName=PEDHRMIS",
+    "database_name": "sangapac_hrmis",
+    "username": "chhinhs_db_user",
+    "password": "29kFylpMI5pQ08iV"
+  },
+  "tech_stack": {
+    "framework": "Next.js 14",
+    "frontend": "React 18",
+    "ui_library": "Ant Design 5",
+    "database_orm": "Mongoose 8",
+    "authentication": "NextAuth 4",
+    "date_handling": "dayjs",
+    "charts": "recharts"
+  },
+  "naming_convention": "snake_case",
+  "timezone": {
+    "storage": "UTC",
+    "display": "Asia/Phnom_Penh",
+    "offset": "+7"
+  },
+  "core_modules": [
+    {
+      "name": "Employee Management",
+      "priority": 1,
+      "features": ["CRUD employees", "Profile management", "Document upload", "Contract management"]
+    },
+    {
+      "name": "Attendance Tracking",
+      "priority": 2,
+      "features": ["Check-in/out", "GPS location", "Work hours calculation", "Late tracking"]
+    },
+    {
+      "name": "Leave Management",
+      "priority": 3,
+      "features": ["Leave requests", "Approval workflow", "Leave balance", "Leave types"]
+    },
+    {
+      "name": "Payroll System",
+      "priority": 4,
+      "features": ["Salary calculation", "Deductions", "Bonuses", "Payslip generation"]
+    },
+    {
+      "name": "Performance Reviews",
+      "priority": 5,
+      "features": ["KPI tracking", "Evaluations", "Feedback", "Goal setting"]
+    },
+    {
+      "name": "Recruitment",
+      "priority": 6,
+      "features": ["Job postings", "Applications", "Interview scheduling", "Candidate tracking"]
+    },
+    {
+      "name": "Training & Development",
+      "priority": 7,
+      "features": ["Course management", "Certifications", "Progress tracking", "Training calendar"]
+    },
+    {
+      "name": "Reports & Analytics",
+      "priority": 8,
+      "features": ["Dashboard", "Charts", "Export reports", "Custom filters"]
+    }
+  ],
+  "mongodb_collections": {
+    "employees": {
+      "fields": [
+        {"name": "employee_id", "type": "string", "required": true, "unique": true},
+        {"name": "employee_code", "type": "string", "required": true, "unique": true},
+        {"name": "first_name", "type": "string", "required": true},
+        {"name": "last_name", "type": "string", "required": true},
+        {"name": "first_name_khmer", "type": "string", "required": false},
+        {"name": "last_name_khmer", "type": "string", "required": false},
+        {"name": "email", "type": "string", "required": true, "unique": true},
+        {"name": "phone_number", "type": "string", "required": true},
+        {"name": "date_of_birth", "type": "Date", "required": true},
+        {"name": "gender", "type": "string", "enum": ["male", "female", "other"]},
+        {"name": "national_id", "type": "string", "required": true},
+        {"name": "address", "type": "string"},
+        {"name": "department_id", "type": "string", "required": true},
+        {"name": "position_id", "type": "string", "required": true},
+        {"name": "employee_type", "type": "string", "enum": ["full_time", "part_time", "contract", "intern"]},
+        {"name": "employee_status", "type": "string", "enum": ["active", "inactive", "terminated"], "default": "active"},
+        {"name": "hire_date", "type": "Date", "required": true},
+        {"name": "termination_date", "type": "Date"},
+        {"name": "salary_amount", "type": "number"},
+        {"name": "profile_photo_url", "type": "string"},
+        {"name": "created_at", "type": "Date", "default": "Date.now"},
+        {"name": "updated_at", "type": "Date", "default": "Date.now"},
+        {"name": "deleted_at", "type": "Date"}
+      ]
+    },
+    "departments": {
+      "fields": [
+        {"name": "department_id", "type": "string", "required": true, "unique": true},
+        {"name": "department_code", "type": "string", "required": true, "unique": true},
+        {"name": "department_name", "type": "string", "required": true},
+        {"name": "department_name_khmer", "type": "string"},
+        {"name": "manager_id", "type": "string"},
+        {"name": "parent_department_id", "type": "string"},
+        {"name": "department_status", "type": "string", "enum": ["active", "inactive"], "default": "active"},
+        {"name": "created_at", "type": "Date", "default": "Date.now"},
+        {"name": "updated_at", "type": "Date", "default": "Date.now"}
+      ]
+    },
+    "positions": {
+      "fields": [
+        {"name": "position_id", "type": "string", "required": true, "unique": true},
+        {"name": "position_code", "type": "string", "required": true, "unique": true},
+        {"name": "position_name", "type": "string", "required": true},
+        {"name": "position_name_khmer", "type": "string"},
+        {"name": "department_id", "type": "string", "required": true},
+        {"name": "position_level", "type": "number"},
+        {"name": "position_status", "type": "string", "enum": ["active", "inactive"], "default": "active"},
+        {"name": "created_at", "type": "Date", "default": "Date.now"},
+        {"name": "updated_at", "type": "Date", "default": "Date.now"}
+      ]
+    },
+    "attendance_records": {
+      "fields": [
+        {"name": "attendance_id", "type": "string", "required": true, "unique": true},
+        {"name": "employee_id", "type": "string", "required": true},
+        {"name": "work_date", "type": "string", "required": true, "description": "YYYY-MM-DD in Cambodia timezone"},
+        {"name": "check_in_time", "type": "Date", "description": "UTC timestamp"},
+        {"name": "check_out_time", "type": "Date", "description": "UTC timestamp"},
+        {"name": "check_in_location_lat", "type": "number"},
+        {"name": "check_in_location_lng", "type": "number"},
+        {"name": "check_out_location_lat", "type": "number"},
+        {"name": "check_out_location_lng", "type": "number"},
+        {"name": "work_hours", "type": "number", "description": "Total hours worked"},
+        {"name": "attendance_status", "type": "string", "enum": ["present", "late", "absent", "half_day"]},
+        {"name": "notes", "type": "string"},
+        {"name": "created_at", "type": "Date", "default": "Date.now"},
+        {"name": "updated_at", "type": "Date", "default": "Date.now"}
+      ]
+    },
+    "leave_requests": {
+      "fields": [
+        {"name": "leave_request_id", "type": "string", "required": true, "unique": true},
+        {"name": "employee_id", "type": "string", "required": true},
+        {"name": "leave_type_id", "type": "string", "required": true},
+        {"name": "start_date", "type": "Date", "required": true},
+        {"name": "end_date", "type": "Date", "required": true},
+        {"name": "total_days", "type": "number", "required": true},
+        {"name": "reason", "type": "string", "required": true},
+        {"name": "leave_status", "type": "string", "enum": ["pending", "approved", "rejected", "cancelled"], "default": "pending"},
+        {"name": "approved_by", "type": "string"},
+        {"name": "approved_at", "type": "Date"},
+        {"name": "rejection_reason", "type": "string"},
+        {"name": "created_at", "type": "Date", "default": "Date.now"},
+        {"name": "updated_at", "type": "Date", "default": "Date.now"}
+      ]
+    },
+    "leave_types": {
+      "fields": [
+        {"name": "leave_type_id", "type": "string", "required": true, "unique": true},
+        {"name": "leave_type_name", "type": "string", "required": true},
+        {"name": "leave_type_name_khmer", "type": "string"},
+        {"name": "annual_quota", "type": "number", "description": "Days per year"},
+        {"name": "is_paid", "type": "boolean", "default": true},
+        {"name": "leave_type_status", "type": "string", "enum": ["active", "inactive"], "default": "active"},
+        {"name": "created_at", "type": "Date", "default": "Date.now"}
+      ]
+    },
+    "payroll_records": {
+      "fields": [
+        {"name": "payroll_id", "type": "string", "required": true, "unique": true},
+        {"name": "employee_id", "type": "string", "required": true},
+        {"name": "payroll_month", "type": "string", "required": true, "description": "YYYY-MM"},
+        {"name": "base_salary", "type": "number", "required": true},
+        {"name": "allowances", "type": "number", "default": 0},
+        {"name": "bonuses", "type": "number", "default": 0},
+        {"name": "deductions", "type": "number", "default": 0},
+        {"name": "overtime_pay", "type": "number", "default": 0},
+        {"name": "net_salary", "type": "number", "required": true},
+        {"name": "payment_date", "type": "Date"},
+        {"name": "payroll_status", "type": "string", "enum": ["draft", "approved", "paid"], "default": "draft"},
+        {"name": "created_at", "type": "Date", "default": "Date.now"},
+        {"name": "updated_at", "type": "Date", "default": "Date.now"}
+      ]
+    },
+    "users": {
+      "fields": [
+        {"name": "user_id", "type": "string", "required": true, "unique": true},
+        {"name": "employee_id", "type": "string", "required": true, "unique": true},
+        {"name": "username", "type": "string", "required": true, "unique": true},
+        {"name": "password_hash", "type": "string", "required": true},
+        {"name": "user_role", "type": "string", "enum": ["admin", "hr_manager", "manager", "employee"], "default": "employee"},
+        {"name": "last_login_at", "type": "Date"},
+        {"name": "user_status", "type": "string", "enum": ["active", "inactive"], "default": "active"},
+        {"name": "created_at", "type": "Date", "default": "Date.now"},
+        {"name": "updated_at", "type": "Date", "default": "Date.now"}
+      ]
+    }
+  },
+  "api_endpoints": {
+    "employees": [
+      {"method": "GET", "path": "/api/employees", "description": "List all employees"},
+      {"method": "GET", "path": "/api/employees/:employee_id", "description": "Get employee details"},
+      {"method": "POST", "path": "/api/employees", "description": "Create new employee"},
+      {"method": "PUT", "path": "/api/employees/:employee_id", "description": "Update employee"},
+      {"method": "DELETE", "path": "/api/employees/:employee_id", "description": "Soft delete employee"}
+    ],
+    "attendance": [
+      {"method": "POST", "path": "/api/attendance/check-in", "description": "Check-in attendance"},
+      {"method": "POST", "path": "/api/attendance/check-out", "description": "Check-out attendance"},
+      {"method": "GET", "path": "/api/attendance/:employee_id", "description": "Get employee attendance records"}
+    ],
+    "leaves": [
+      {"method": "POST", "path": "/api/leaves/request", "description": "Submit leave request"},
+      {"method": "GET", "path": "/api/leaves/:employee_id", "description": "Get employee leave requests"},
+      {"method": "PUT", "path": "/api/leaves/:leave_request_id/approve", "description": "Approve leave request"},
+      {"method": "PUT", "path": "/api/leaves/:leave_request_id/reject", "description": "Reject leave request"}
+    ],
+    "payroll": [
+      {"method": "POST", "path": "/api/payroll", "description": "Generate payroll"},
+      {"method": "GET", "path": "/api/payroll/:employee_id", "description": "Get employee payroll records"},
+      {"method": "PUT", "path": "/api/payroll/:payroll_id/approve", "description": "Approve payroll"}
+    ]
+  },
+  "error_handling": {
+    "format": {
+      "success": false,
+      "message": "Human-readable error description",
+      "error": "System error message",
+      "details": {},
+      "code": "ERROR_CODE"
+    }
+  },
+  "ui_features": {
+    "language_support": ["English", "Khmer"],
+    "default_language": "English",
+    "theme": "Ant Design default",
+    "responsive": true,
+    "mobile_support": true
+  },
+  "deployment": {
+    "platform": "Vercel",
+    "environment_variables": [
+      "MONGODB_URI",
+      "NEXTAUTH_SECRET",
+      "NEXTAUTH_URL",
+      "NODE_ENV"
+    ]
+  }
+}
